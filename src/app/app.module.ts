@@ -59,10 +59,18 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { PostagemComponent } from './component/postagem/postagem.component';
+import { AuthComponent } from './pages/auth/auth.component';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PostagemComponent,
+    AuthComponent,
+    NotFoundPageComponent,
+    DashboardComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
