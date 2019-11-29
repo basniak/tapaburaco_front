@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "~@angular/material/prebuilt-themes/purple-green.css";
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @import "~ngx-toastr/toastr";
 @import "~swiper/css/swiper.min.css";
 body,
@@ -16,6 +16,13 @@ body {
   padding: 0;
   border: 0;
   vertical-align: baseline;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  align-items: center;
 }
 
 mat-toolbar.example-header {
