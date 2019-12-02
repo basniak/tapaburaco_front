@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  baseURL: 'https://tapaburacoback.herokuapp.com/api',
   firebase: {
     apiKey: "AIzaSyC-0uZx9FFNlbbYDwQbl_OOIJuBVd-mbGQ",
     authDomain: "tapaburacobeta.firebaseapp.com",

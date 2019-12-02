@@ -27,6 +27,8 @@ body {
 
 mat-toolbar.example-header {
   position: fixed;
+  background-color: #111;
+  color: #fff;
   top: 0;
   z-index: 999;
 }

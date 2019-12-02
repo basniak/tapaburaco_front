@@ -1,6 +1,5 @@
 <div class="container">
-  <app-postagem></app-postagem>
-  <app-postagem></app-postagem>
-  <app-postagem></app-postagem>
-  <app-postagem></app-postagem>
+  <div *ngFor="let item of dados">
+    <app-postagem [postagem]='item'></app-postagem>
+  </div>
 </div>

@@ -63,6 +63,7 @@ import { PostagemComponent } from './component/postagem/postagem.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ComentarioComponent } from './component/comentario/comentario.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     PostagemComponent,
     AuthComponent,
     NotFoundPageComponent,
-    DashboardComponent
+    DashboardComponent,
+    ComentarioComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
@@ -129,7 +131,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     CurrencyMaskModule,
     NgxUsefulSwiperModule
   ],
-  providers: [],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-br' },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
