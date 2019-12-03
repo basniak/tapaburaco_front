@@ -1,4 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<ngx-loading-bar></ngx-loading-bar>
 <mat-toolbar class="example-header">
   <span><img src="/assets/logo.png"
       style="background-color: aliceblue; max-height: 50px; width: auto; border-radius: 10%;">
@@ -14,19 +15,30 @@
       <mat-icon>account_box</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
+      <mat-card *ngIf="api">
+        <mat-card-header *ngIf="api.firebaseUser">
+          <img mat-card-avatar [src]="api.firebaseUser.photoURL">
+          <mat-card-title>
+            {{api.firebaseUser.displayName}}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{api.firebaseUser.email}}
+          </mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
       <button mat-menu-item>
-        <mat-icon>config</mat-icon>
+        <mat-icon>settings_applications</mat-icon>
         <span>Configuraçoes</span>
       </button>
-      <button mat-menu-item disabled>
+      <button mat-menu-item>
         <mat-icon>account_circle</mat-icon>
         <span>Perfil</span>
       </button>
       <button mat-menu-item>
-        <mat-icon>app</mat-icon>
+        <mat-icon>apps</mat-icon>
         <span>Sobre</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item [routerLink]="[ '/login' ]" (click)="api.afAuth.auth.signOut()">
         <mat-icon>exit_to_app</mat-icon>
         <span>sair</span>
       </button>
