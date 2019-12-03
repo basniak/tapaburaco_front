@@ -6,17 +6,21 @@
   </span>
   <span><button mat-button>Em Alta</button></span>
   <span class="example-spacer"></span>
+
+  <button *ngIf="api && api.firebaseUser.uid" mat-mini-fab aria-label="Example icon-button with a heart icon" color="primary" [routerLink]="['/post']"
+    routerLinkActive="router-link-active">
+    <mat-icon>add</mat-icon>
+  </button >
   <span><button mat-button>
       <mat-icon>notification_important</mat-icon>
     </button></span>
-
   <span>
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>account_box</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <mat-card *ngIf="api">
-        <mat-card-header *ngIf="api.firebaseUser">
+        <mat-card-header *ngIf="api.firebaseUser.uid">
           <img mat-card-avatar [src]="api.firebaseUser.photoURL">
           <mat-card-title>
             {{api.firebaseUser.displayName}}

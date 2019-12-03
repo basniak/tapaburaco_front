@@ -1,0 +1,103 @@
+<div class="container">
+    <p>post works!</p>
+    <mat-card>
+        <div class="slide-controler pading-5-left">
+            <swiper [config]="config" #swipper>
+                <div class="swiper-wrapper" #swipperrapper>
+                    <div *ngFor="let item of post_image; let i; of: index" class="swiper-slide">
+                        <img class="imagem-carrosel" [src]="item" #swipperitem />
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </swiper>
+        </div>
+        <div class="pading-5-left" style="padding: 20px;" fxLayout="column" fxFlexAlign="center center">
+            <button mat-raised-button color="primary" for="filethumb">
+                <label class="bg-color-primary" for="filethumb" fxFlex="100">
+                    <input fxFlex="100" type="file" id="filethumb" class="input-default"
+                        (change)="fileChangeEventThumb($event)" accept=".jpg, .jpeg, .png" #fileInput />
+                    <figure fxFlex="100" class="personal-figure-promo">
+                        <figcaption class="personal-figcaption-promo">
+                            Upload de
+                            Imagem
+                        </figcaption>
+                    </figure>
+                </label>
+            </button>
+        </div>
+        <div class="crop-fix">
+            <div class="form-group foto">
+                <image-cropper #cropthumb [imageChangedEvent]="imageChangedEventThumb" [maintainAspectRatio]="true"
+                    [aspectRatio]="1 / 1" [cropperMinWidth]="200" [cropperMinHeight]="200" [resizeToWidth]="500"
+                    format="png" (imageCropped)="onFileChange($event)" (imageLoaded)="imageLoaded()"
+                    (loadImageFailed)="loadImageFailed()" class="preview-image-promo">
+                </image-cropper>
+                <div class="buttons-crop" *ngIf="imageChangedEventThumb">
+                    <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="gappx">
+                        <button title="Rotacionar para esquerda" button mat-raised-button color="white"
+                            (click)="rotateLeft($event)">
+                            <i class="material-icons">rotate_left</i>
+                        </button>
+                        <button title="Rotacionar para direita" button mat-raised-button color="white"
+                            (click)="rotateRight($event)">
+                            <i class="material-icons">rotate_right</i>
+                        </button>
+                        <button title="Espelhar horizontalmente" button mat-raised-button color="white"
+                            (click)="flipHorizontal($event)">
+                            <i class="material-icons">flip</i>
+                        </button>
+                        <button title="Espelhar verticalmente" button mat-raised-button color="white"
+                            (click)="flipVertical($event)">
+                            <i class="material-icons flip-vertical">flip</i>
+                        </button>
+                    </div>
+                    <div fxLayout="row" style="margin-top: 5px;" fxLayoutAlign="space-around center"
+                        fxLayoutGap="gappx">
+                        <button title="Remover foto" mat-raised-button color="warn" type="reset"
+                            (click)="retirarFotoThumb()">
+                            Remover Foto
+                        </button>
+                        <button title="Aplicar" mat-raised-button color="primary" (click)="aplicarFotoThumb()">
+                            Aplicar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form [formGroup]="form">
+            <div fxLayout="column">
+                <div fxLayout="column" class="pading-5-left" fxFlex="auto" fxLayoutAlign="start stretch">
+                    <mat-form-field class="" appearance="outline">
+                        <mat-label>Titulo</mat-label>
+                        <input matInput placeholder="Insira o titulo" type="text" #titulos required
+                            formControlName="title" />
+                        <mat-hint align="end">{{ titulos.value.length }} / 100</mat-hint>
+                        <mat-error *ngIf="form.get('title').hasError('required')">
+                            Titulo é
+                            <strong>obrigatorio</strong>
+                        </mat-error>
+                        <mat-icon matSuffix>person</mat-icon>
+                    </mat-form-field>
+                    <mat-form-field class="" appearance="outline">
+                        <mat-label>Descrição</mat-label>
+                        <textarea matInput #message maxlength="300" placeholder="Insira a Descrição" type="text"
+                            required formControlName="about"></textarea>
+                        <mat-hint align="end">{{ message.value.length }} / 300</mat-hint>
+                        <mat-error *ngIf="form.get('about').hasError('required')">
+                            Descrição é
+                            <strong>obrigatoria</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="gappx" fxFlex="100"
+                        style="width: 100%;">
+                        <button mat-raised-button color="primary" (click)="salvar()">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>

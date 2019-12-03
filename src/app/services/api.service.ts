@@ -42,6 +42,7 @@ export class ApiService {
     photoURL: "",
     emailVerified: undefined
   };
+  public usuario: Usuario = new Usuario();
 
   constructor(private http: HttpClient,
     public rotas: Router,
@@ -101,7 +102,7 @@ export class ApiService {
 
   public postData(rota, obj): Observable<any> {
     this.loadingBar.start();
-    console.log('post', rota, obj)
+    // console.log('post', rota, obj)
     return this.http.post(`${this.baseurl}${rota}`, obj, { headers: this.tokenHeader })
   }
 
@@ -146,6 +147,7 @@ export class ApiService {
                       this.loadingBar.complete();
                       this.loadingBar.start();
                       this.createUser({ ...this.firebaseUser, ...value }).subscribe(usuarioLogado => {
+                        this.usuario = usuarioLogado
                         resolve(usuarioLogado)
                       }, errororo => {
                         console.log("Ecriar o usario usuario", errororo);
@@ -203,7 +205,7 @@ export class ApiService {
     });
   }
   public createUser(obj): Observable<any> {
-    console.log('Usuario criado', obj)
+    // console.log('Usuario criado', obj)
     return this.postData("users", obj)
   }
 
@@ -233,4 +235,42 @@ export class ApiService {
       });
     });
   }
+  uploadFoto(base64, uid, titulo) {
+    this.loadingBar.start();
+    let path = `promocao/${uid}/${titulo}`;
+    let fileRef = this.storage.ref(path.replace(/\s/g, ""));
+    let taksUpload = fileRef.putString(base64, "data_url");
+    return new Promise<any>((resolve, reject) => {
+      taksUpload.task.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        snapshot => {
+          this.loadingBar.set(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          if (snapshot.state == "sucess") {
+            // console.log('Uploaded a data_url string!', snapshot.downloadURL);
+            this.loadingBar.complete();
+            // this.loadingBar.
+          }
+        },
+        erro => {
+          // console.log('Falhou o upload')
+          alert(
+            "Falha ao fazer o upload da sua imagem, tente novamente mais tarde"
+          );
+          this.loadingBar.complete();
+          reject(erro);
+        },
+        () => {
+          taksUpload.task.snapshot.ref
+            .getDownloadURL()
+            .then(function (downloadURL) {
+              // console.log('File available at', downloadURL);
+              resolve(downloadURL);
+            });
+        }
+      );
+    });
+  }
+
 }
