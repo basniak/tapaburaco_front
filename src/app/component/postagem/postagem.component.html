@@ -1,7 +1,7 @@
 <mat-card class="controle-card">
   <mat-card-header>
-    <img mat-card-avatar [src]="postagem.usuario.user_image" [alt]="postagem.usuario.name" />
-    <mat-card-title>{{postagem.usuario.name}} {{postagem.usuario.lastname}}</mat-card-title>
+    <img mat-card-avatar [src]="postagem.usuario.photoURL" [alt]="postagem.usuario.displayName" />
+    <mat-card-title>{{postagem.usuario.displayName}}</mat-card-title>
     <mat-card-subtitle>{{postagem.post_loc}}</mat-card-subtitle>
     <span style="position: absolute; right: 0; padding-right: 20px;">{{postagem.post_date | date}}</span>
   </mat-card-header>
@@ -17,7 +17,7 @@
   <div class="slide-controler">
     <swiper [config]="config" #swipper>
       <div class="swiper-wrapper" #swipperrapper>
-        <div *ngFor="let item of post_image; let i; of: index" class="swiper-slide">
+        <div *ngFor="let item of postagem.post_image; let i; of: index" class="swiper-slide">
           <img class="imagem-carrosel" [src]="item" #swipperitem />
         </div>
       </div>

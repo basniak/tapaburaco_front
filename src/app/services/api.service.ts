@@ -73,7 +73,7 @@ export class ApiService {
               this.token = res;
               localStorage.setItem("token", res);
               // this.getEmpresa();
-              this.getUsuario();
+              this.getUsuarioLogado();
               this.loadingBar.complete();
             })
             .catch(e => {
@@ -94,6 +94,10 @@ export class ApiService {
   async getUsuario() {
     let params = { id: this.firebaseUser.uid };
     return this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params })
+  }
+  async getUsuarioLogado() {
+    let params = { id: this.firebaseUser.uid };
+    this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params }).subscribe((res: Usuario) => { this.usuario = res })
   }
   public getData(rota): Observable<any> {
 
@@ -265,6 +269,7 @@ export class ApiService {
           taksUpload.task.snapshot.ref
             .getDownloadURL()
             .then(function (downloadURL) {
+
               // console.log('File available at', downloadURL);
               resolve(downloadURL);
             });

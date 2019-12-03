@@ -1,7 +1,6 @@
 <div class="container">
-    <p>post works!</p>
     <mat-card>
-        <div class="slide-controler pading-5-left">
+        <div class="slide-controler pading-5-left" style="min-height: 200px;" *ngIf="post_image.length">
             <swiper [config]="config" #swipper>
                 <div class="swiper-wrapper" #swipperrapper>
                     <div *ngFor="let item of post_image; let i; of: index" class="swiper-slide">
@@ -70,12 +69,12 @@
             <div fxLayout="column">
                 <div fxLayout="column" class="pading-5-left" fxFlex="auto" fxLayoutAlign="start stretch">
                     <mat-form-field class="" appearance="outline">
-                        <mat-label>Titulo</mat-label>
-                        <input matInput placeholder="Insira o titulo" type="text" #titulos required
-                            formControlName="title" />
+                        <mat-label>Endereço</mat-label>
+                        <input matInput placeholder="Insira o Endereço" type="text" #titulos required
+                            formControlName="post_loc" />
                         <mat-hint align="end">{{ titulos.value.length }} / 100</mat-hint>
-                        <mat-error *ngIf="form.get('title').hasError('required')">
-                            Titulo é
+                        <mat-error *ngIf="form.get('post_loc').hasError('required')">
+                            Endereço é
                             <strong>obrigatorio</strong>
                         </mat-error>
                         <mat-icon matSuffix>person</mat-icon>
@@ -83,9 +82,9 @@
                     <mat-form-field class="" appearance="outline">
                         <mat-label>Descrição</mat-label>
                         <textarea matInput #message maxlength="300" placeholder="Insira a Descrição" type="text"
-                            required formControlName="about"></textarea>
+                            required formControlName="post_text"></textarea>
                         <mat-hint align="end">{{ message.value.length }} / 300</mat-hint>
-                        <mat-error *ngIf="form.get('about').hasError('required')">
+                        <mat-error *ngIf="form.get('post_text').hasError('required')">
                             Descrição é
                             <strong>obrigatoria</strong>
                         </mat-error>

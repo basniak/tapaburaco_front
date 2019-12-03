@@ -65,6 +65,7 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ComentarioComponent } from './component/comentario/comentario.component';
 import { PostComponent } from './pages/post/post.component';
+import { SignupComponent } from './pages/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { PostComponent } from './pages/post/post.component';
     NotFoundPageComponent,
     DashboardComponent,
     ComentarioComponent,
-    PostComponent
+    PostComponent,
+    SignupComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

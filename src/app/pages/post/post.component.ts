@@ -5,6 +5,9 @@ import 'moment/locale/pt-br';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
+import { ToastrService } from "ngx-toastr";
+
+import { LoadingBarService } from "@ngx-loading-bar/core";
 import { SwiperOptions } from 'swiper';
 
 @Component({
@@ -24,13 +27,13 @@ export class PostComponent implements OnInit {
   valorMenor: Number = 0;
   uid: String;
   descont: Number = 0;
-  constructor(private formBuilder: FormBuilder, public api: ApiService, public rota: Router) {
+  constructor(private formBuilder: FormBuilder, public loadingBar: LoadingBarService, public api: ApiService, public rota: Router, public toach: ToastrService) {
     api.user.subscribe(res => {
       this.uid = res.uid
     });
   }
   public config: SwiperOptions = {
-    slidesPerView: 3, // Slides Visible in Single View Default is 1
+    slidesPerView: 1, // Slides Visible in Single View Default is 1
     pagination: { el: '.swiper-pagination', clickable: true },
     navigation: {
       nextEl: '.swiper-button-next',
@@ -45,8 +48,9 @@ export class PostComponent implements OnInit {
   ngOnInit() {
     moment.locale('pt-br')
     this.form = this.formBuilder.group({
-      title: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      about: ["", [Validators.required, Validators.minLength(2)]]
+      post_loc: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      post_text: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(300)]],
+
     })
   }
 
@@ -66,6 +70,16 @@ export class PostComponent implements OnInit {
 
   aplicarFotoThumb() {
     this.fotoThumbAplicado = true;
+    this.api.uploadFoto(this.fotoThumb, this.api.firebaseUser.uid, Math.random().toString(36).slice(-10) + '.png').then(res => {
+
+      this.post_image.push(res)
+      this.retirarFotoThumb()
+      this.toach.success('Upload feito com sucesso', 'Upload de FOTO')
+      this.loadingBar.complete()
+    }, err => {
+      this.toach.error('Falha no upload de foto', 'Upload de FOTO')
+      this.loadingBar.complete()
+    })
   }
   retirarFotoThumb() {
     this.fotoThumbAplicado = false;
@@ -96,31 +110,35 @@ export class PostComponent implements OnInit {
     // show message
   }
   async salvar() {
-    var tmp = this.form.value
-    tmp.descont = this.descont
-    if (!tmp.thumbnail && this.fotoThumb && tmp.title) {
-      this.api.uploadFoto(this.fotoThumb, this.uid, tmp.title).then(ress => {
-        tmp.thumbnail = ress;
-        this.form.get('thumbnail').setValue(ress);
-        this.enviarFormServidor(tmp)
-      })
-    } else {
-      if (!this.form.valid) {
-        return
+    this.loadingBar.start()
+    if (this.post_image.length) {
+      var obj = this.form.value;
+      obj['user_id'] = this.api.usuario._id
+      obj['post_image'] = this.post_image
+      if (this.form.valid) {
+        this.api.postData('posts', obj).subscribe(res => {
+          this.loadingBar.complete()
+          this.rota.navigate(['/'])
+        })
       } else {
-        if (tmp.thumbnail) {
-          this.enviarFormServidor(tmp)
-        }
+        this.toach.error('Preencha os campos', 'ERROR')
       }
+    } else {
+      this.toach.error('Faça upload de fotos', 'ERROR')
     }
+    this.loadingBar.complete()
   }
 
   enviarFormServidor(tmp) {
     //  console.log(tmp)
+    this.loadingBar.start()
     if (this.form.valid) {
       this.api.postData('posts', tmp).subscribe(res => {
         console.log(res)
+        this.loadingBar.complete()
+
         this.rota.navigate(['/'])
+
       })
     }
   }
