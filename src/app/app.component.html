@@ -7,10 +7,10 @@
   <span><button mat-button>Em Alta</button></span>
   <span class="example-spacer"></span>
 
-  <button *ngIf="api && api.firebaseUser.uid" mat-mini-fab aria-label="Example icon-button with a heart icon" color="primary" [routerLink]="['/post']"
-    routerLinkActive="router-link-active">
+  <button *ngIf="api && api.firebaseUser.uid" mat-mini-fab aria-label="Example icon-button with a heart icon"
+    color="primary" [routerLink]="['/post']" routerLinkActive="router-link-active">
     <mat-icon>add</mat-icon>
-  </button >
+  </button>
   <span><button mat-button>
       <mat-icon>notification_important</mat-icon>
     </button></span>
@@ -19,7 +19,7 @@
       <mat-icon>account_box</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <mat-card *ngIf="api">
+      <mat-card *ngIf="api && api.firebaseUser.uid">
         <mat-card-header *ngIf="api.firebaseUser.uid">
           <img mat-card-avatar [src]="api.firebaseUser.photoURL">
           <mat-card-title>
@@ -30,22 +30,36 @@
           </mat-card-subtitle>
         </mat-card-header>
       </mat-card>
-      <button mat-menu-item>
-        <mat-icon>settings_applications</mat-icon>
-        <span>Configuraçoes</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>account_circle</mat-icon>
-        <span>Perfil</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>apps</mat-icon>
-        <span>Sobre</span>
-      </button>
-      <button mat-menu-item [routerLink]="[ '/login' ]" (click)="api.afAuth.auth.signOut()">
-        <mat-icon>exit_to_app</mat-icon>
-        <span>sair</span>
-      </button>
+      <span *ngIf="api && api.firebaseUser.uid">
+        <button mat-menu-item [routerLink]="[ '/' ]">
+          <mat-icon>settings_applications</mat-icon>
+          <span>Configuraçoes</span>
+        </button>
+        <button mat-menu-item [routerLink]="[ '/' ]">
+          <mat-icon>account_circle</mat-icon>
+          <span>Perfil</span>
+        </button>
+        <button mat-menu-item [routerLink]="[ '/' ]">
+          <mat-icon>apps</mat-icon>
+          <span>Sobre</span>
+        </button>
+        <button mat-menu-item [routerLink]="[ '/signup' ]" (click)="api.afAuth.auth.signOut()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>sair</span>
+        </button>
+      </span>
+      <span *ngIf="api && !api.firebaseUser.uid">
+
+        <button mat-menu-item [routerLink]="[ '/login' ]">
+          <mat-icon>account_circle</mat-icon>
+          <span>Login</span>
+        </button>
+        <button mat-menu-item [routerLink]="[ '/signup' ]">
+          <mat-icon>person_add</mat-icon>
+          <span>Criar Login</span>
+        </button>
+
+      </span>
     </mat-menu>
   </span>
 </mat-toolbar>

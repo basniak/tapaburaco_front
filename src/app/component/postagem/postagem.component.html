@@ -28,16 +28,31 @@
   </div>
   <div>
     <mat-card-content>
-      <mat-card-title>Todos os comentarios</mat-card-title>
+      <mat-card-title *ngIf="postagem.comentarios.length">Todos os comentarios</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="start stretch">
         <div *ngFor="let item of postagem.comentarios">
           <app-comentario [comentario]="item.com_text"></app-comentario>
         </div>
       </div>
+      <div fxLayout="column" fxLayoutAlign="start stretch">
+        <form [formGroup]="form">
+          <mat-form-field class="formbase" appearance="outline" fxFlex="auto">
+            <mat-label>Comentario</mat-label>
+            <input matInput placeholder="Insira um comentario" type="text" #titulos required
+              formControlName="com_text" />
+            <mat-hint align="end">{{ titulos.value.length }} / 100</mat-hint>
+            <mat-error *ngIf="form.get('com_text').hasError('required')">
+              Comentario
+              <strong>Invalido</strong>
+            </mat-error>
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+          </form>
+      </div>
     </mat-card-content>
   </div>
   <mat-card-actions>
-
+    <button mat-raised-button color="primary" (click)="salvarComentario()">Salvar Comentario</button>
     <button mat-raised-button color="primary">Like {{postagem.post_like}} </button>
     <mat-icon>favotite</mat-icon>
   </mat-card-actions>

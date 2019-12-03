@@ -31,7 +31,7 @@ export class ApiService {
   public isLoading = new BehaviorSubject(false);
   private requests: HttpRequest<any>[] = [];
   public userComplete = new BehaviorSubject(false);
-
+  public dadosPostagem = []
   public tokenHeader = {
     'Content-Type': 'application/json'
   };
@@ -122,6 +122,23 @@ export class ApiService {
           reject(err);
         }
       );
+    });
+  }
+  doLogin(value) {
+    return new Promise<any>((resolve, reject) => {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          async res => {
+            this.getUsuarioLogado().then(ress => {
+              resolve(ress)
+            }).catch(er => {
+              reject(er)
+            })
+          },
+          err => reject(err)
+        );
     });
   }
   doRegister(value, arquivoImg) {
@@ -276,6 +293,12 @@ export class ApiService {
         }
       );
     });
+  }
+  getPostagens() {
+    this.getData('posts').subscribe(res => {
+      this.dadosPostagem = res
+      this.loadingBar.complete();
+    })
   }
 
 }

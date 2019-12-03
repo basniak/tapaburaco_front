@@ -4,11 +4,15 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
 import { AuthComponent } from './pages/auth/auth.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PostComponent } from './pages/post/post.component';
+import { SignupComponent } from './pages/signup/signup.component';
 
 
 const routes: Routes = [{
-  path: 'login',
+  path: 'signup',
   component: AuthComponent
+}, {
+  path: 'login',
+  component: SignupComponent
 }, {
   path: '',
   component: DashboardComponent

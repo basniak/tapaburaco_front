@@ -7,14 +7,13 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  public dados = []
+  public dadosPostagem = []
   constructor(public api: ApiService) {
-    this.api.getData('posts').subscribe(res => {
-      this.dados = res
-    })
+
   }
 
   ngOnInit() {
+    this.api.getPostagens()
   }
 
 }
