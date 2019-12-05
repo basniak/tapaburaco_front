@@ -1,6 +1,6 @@
-import { Injectable, OnInit, Injector } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/auth";
-import * as firebase from "firebase/app";
+import { Injectable, OnInit, Injector } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
+import * as firebase from 'firebase/app';
 import {
   HttpClient,
   HttpHeaders,
@@ -9,48 +9,48 @@ import {
   HttpHandler,
   HttpEvent,
   HttpResponse
-} from "@angular/common/http";
+} from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { Usuario, User } from '../model/user/user';
 
-import { LoadingBarService } from "@ngx-loading-bar/core";
-import { AngularFireStorage } from "@angular/fire/storage";
-import { ToastrService } from "ngx-toastr";
-import { Router } from "@angular/router";
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-
   private baseurl = environment.baseURL;
   public user: Observable<firebase.User>;
   private token: String = null;
   public isLoading = new BehaviorSubject(false);
   private requests: HttpRequest<any>[] = [];
   public userComplete = new BehaviorSubject(false);
-  public dadosPostagem = []
+  public dadosPostagem = [];
   public tokenHeader = {
     'Content-Type': 'application/json'
   };
   public firebaseUser: User = {
     uid: null,
-    email: "",
-    displayName: "",
-    photoURL: "",
-    emailVerified: undefined
+    email: '',
+    displayName: '',
+    photoURL: '',
+    emailVerified: null
   };
   public usuario: Usuario = new Usuario();
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     public rotas: Router,
     public loadingBar: LoadingBarService,
     private storage: AngularFireStorage,
     public afAuth: AngularFireAuth,
-    private toastr: ToastrService) {
-
+    private toastr: ToastrService
+  ) {
     afAuth.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
     this.user = afAuth.authState;
     this.user.subscribe(user => {
@@ -63,15 +63,15 @@ export class ApiService {
             photoURL: user.photoURL,
             emailVerified: user.emailVerified
           };
-          console.log('Usuario logado', this.firebaseUser.displayName)
-          localStorage.setItem("user", JSON.stringify(this.firebaseUser));
+          console.log('Usuario logado', this.firebaseUser.displayName);
+          localStorage.setItem('user', JSON.stringify(this.firebaseUser));
 
           // this.getEmpresa()
           user
             .getIdToken(true)
             .then(res => {
               this.token = res;
-              localStorage.setItem("token", res);
+              localStorage.setItem('token', res);
               // this.getEmpresa();
               this.getUsuarioLogado();
               this.loadingBar.complete();
@@ -80,50 +80,49 @@ export class ApiService {
               this.loadingBar.complete();
             });
         } else {
-          localStorage.removeItem("user");
-          // JSON.parse(localStorage.getItem('user'));
-          this.token = null;
-          localStorage.removeItem("token");
-          console.log("Nenhum usuario logado");
+          this.setFirebaseNull();
         }
       } catch (error) {
         this.afAuth.auth.signOut();
       }
     });
   }
+  async setFirebaseNull() {
+    this.firebaseUser = {
+      uid: null,
+      email: '',
+      displayName: '',
+      photoURL: '',
+      emailVerified: null
+    };
+    localStorage.removeItem('user');
+    // JSON.parse(localStorage.getItem('user'));
+    this.token = null;
+    localStorage.removeItem('token');
+    console.log('Nenhum usuario logado');
+  }
+
   async getUsuario() {
     let params = { id: this.firebaseUser.uid };
-    return this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params })
+    return this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params });
   }
   async getUsuarioLogado() {
     let params = { id: this.firebaseUser.uid };
-    this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params }).subscribe((res: Usuario) => { this.usuario = res })
+    this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params }).subscribe(res => {
+      console.log(res);
+      this.usuario = res;
+    });
   }
   public getData(rota): Observable<any> {
-
-    return this.http.get(`${this.baseurl}${rota}`, { headers: this.tokenHeader })
+    return this.http.get(`${this.baseurl}${rota}`, { headers: this.tokenHeader });
   }
 
   public postData(rota, obj): Observable<any> {
     this.loadingBar.start();
     // console.log('post', rota, obj)
-    return this.http.post(`${this.baseurl}${rota}`, obj, { headers: this.tokenHeader })
+    return this.http.post(`${this.baseurl}${rota}`, obj, { headers: this.tokenHeader });
   }
 
-  public doFacebookLogin() {
-    return new Promise<any>((resolve, reject) => {
-      let provider = new firebase.auth.FacebookAuthProvider();
-      this.afAuth.auth.signInWithPopup(provider).then(
-        res => {
-          resolve(res);
-        },
-        err => {
-          console.log(err);
-          reject(err);
-        }
-      );
-    });
-  }
   doLogin(value) {
     return new Promise<any>((resolve, reject) => {
       firebase
@@ -131,11 +130,13 @@ export class ApiService {
         .signInWithEmailAndPassword(value.email, value.password)
         .then(
           async res => {
-            this.getUsuarioLogado().then(ress => {
-              resolve(ress)
-            }).catch(er => {
-              reject(er)
-            })
+            this.getUsuarioLogado()
+              .then(ress => {
+                resolve(ress);
+              })
+              .catch(er => {
+                reject(er);
+              });
           },
           err => reject(err)
         );
@@ -167,36 +168,39 @@ export class ApiService {
                     .then(async tmp => {
                       this.loadingBar.complete();
                       this.loadingBar.start();
-                      this.createUser({ ...this.firebaseUser, ...value }).subscribe(usuarioLogado => {
-                        this.usuario = usuarioLogado
-                        resolve(usuarioLogado)
-                      }, errororo => {
-                        console.log("Ecriar o usario usuario", errororo);
-                        this.loadingBar.complete();
-                        reject(errororo);
-                      })
+                      this.createUser({ ...this.firebaseUser, ...value }).subscribe(
+                        usuarioLogado => {
+                          this.usuario = usuarioLogado;
+                          resolve(usuarioLogado);
+                        },
+                        errororo => {
+                          console.log('Ecriar o usario usuario', errororo);
+                          this.loadingBar.complete();
+                          reject(errororo);
+                        }
+                      );
                     })
                     .catch(updateErro => {
-                      console.log("Erro Update perfil do usuario", updateErro);
+                      console.log('Erro Update perfil do usuario', updateErro);
                       this.loadingBar.complete();
                       reject(updateErro);
                     });
                 })
                 .catch(imgErro => {
                   this.loadingBar.complete();
-                  console.log("Erro uploadImg do usuario", imgErro);
+                  console.log('Erro uploadImg do usuario', imgErro);
                   reject(imgErro);
                 });
             })
             .catch(errEmail => {
               this.loadingBar.complete();
-              console.log("Erro Check Email do usuario", errEmail);
+              console.log('Erro Check Email do usuario', errEmail);
               reject(errEmail);
             });
         })
         .catch(err => {
           this.loadingBar.complete();
-          console.log("Erro Criar usuario", err);
+          console.log('Erro Criar usuario', err);
           reject(err);
         });
     });
@@ -210,7 +214,7 @@ export class ApiService {
           .then(async criar => resolve(criar))
           .catch(erro => reject(erro));
       } else {
-        reject("usario invalido");
+        reject('usario invalido');
       }
     });
   }
@@ -227,17 +231,18 @@ export class ApiService {
   }
   public createUser(obj): Observable<any> {
     // console.log('Usuario criado', obj)
-    return this.postData("users", obj)
+
+    return this.postData('users', obj);
   }
 
   uploadPerfilImagem(file, uid) {
-    var caminhoImagem = "";
+    var caminhoImagem = '';
     var task = null;
     this.loadingBar.start();
 
     let path = `perfil/${uid}/${file.name}`;
-    let fileRef = this.storage.ref(path.replace(/\s/g, ""));
-    task = this.storage.upload(path.replace(/\s/g, ""), file);
+    let fileRef = this.storage.ref(path.replace(/\s/g, ''));
+    task = this.storage.upload(path.replace(/\s/g, ''), file);
     // uploadPercent = task.percentageChanges();
     return new Promise<any>((resolve, reject) => {
       task.then(up => {
@@ -259,16 +264,14 @@ export class ApiService {
   uploadFoto(base64, uid, titulo) {
     this.loadingBar.start();
     let path = `promocao/${uid}/${titulo}`;
-    let fileRef = this.storage.ref(path.replace(/\s/g, ""));
-    let taksUpload = fileRef.putString(base64, "data_url");
+    let fileRef = this.storage.ref(path.replace(/\s/g, ''));
+    let taksUpload = fileRef.putString(base64, 'data_url');
     return new Promise<any>((resolve, reject) => {
       taksUpload.task.on(
         firebase.storage.TaskEvent.STATE_CHANGED,
         snapshot => {
-          this.loadingBar.set(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          if (snapshot.state == "sucess") {
+          this.loadingBar.set((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          if (snapshot.state == 'sucess') {
             // console.log('Uploaded a data_url string!', snapshot.downloadURL);
             this.loadingBar.complete();
             // this.loadingBar.
@@ -276,29 +279,23 @@ export class ApiService {
         },
         erro => {
           // console.log('Falhou o upload')
-          alert(
-            "Falha ao fazer o upload da sua imagem, tente novamente mais tarde"
-          );
+          alert('Falha ao fazer o upload da sua imagem, tente novamente mais tarde');
           this.loadingBar.complete();
           reject(erro);
         },
         () => {
-          taksUpload.task.snapshot.ref
-            .getDownloadURL()
-            .then(function (downloadURL) {
-
-              // console.log('File available at', downloadURL);
-              resolve(downloadURL);
-            });
+          taksUpload.task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            // console.log('File available at', downloadURL);
+            resolve(downloadURL);
+          });
         }
       );
     });
   }
   getPostagens() {
     this.getData('posts').subscribe(res => {
-      this.dadosPostagem = res
+      this.dadosPostagem = res;
       this.loadingBar.complete();
-    })
+    });
   }
-
 }

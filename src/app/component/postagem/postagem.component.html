@@ -14,46 +14,72 @@
       </div>
     </div>
   </mat-card-content>
-  <div class="slide-controler">
-    <swiper [config]="config" #swipper>
-      <div class="swiper-wrapper" #swipperrapper>
-        <div *ngFor="let item of postagem.post_image; let i; of: index" class="swiper-slide">
-          <img class="imagem-carrosel" [src]="item" #swipperitem />
-        </div>
+  <div fxLayout="row">
+    <div fxFlex="40">
+      <div class="slide-controler">
+        <swiper [config]="config" #swipper>
+          <div class="swiper-wrapper" #swipperrapper>
+            <div *ngFor="let item of postagem.post_image; let i; of: index" class="swiper-slide">
+              <div class="swiper-slide" #swipperitem style="background-position: 50%;
+          background-repeat: no-repeat;
+          background-size: cover;
+          margin: 0 auto;min-height: 400px;max-width: 400px;" [style.background-image]="'url('+item+')'">
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </swiper>
       </div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-    </swiper>
-  </div>
-  <div>
-    <mat-card-content>
-      <mat-card-title *ngIf="postagem.comentarios.length">Todos os comentarios</mat-card-title>
-      <div fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngFor="let item of postagem.comentarios">
-          <app-comentario [comentario]="item.com_text"></app-comentario>
-        </div>
+      <div>
+       <button mat-raised-button>text</button>
       </div>
-      <div fxLayout="column" fxLayoutAlign="start stretch">
-        <form [formGroup]="form">
-          <mat-form-field class="formbase" appearance="outline" fxFlex="auto">
-            <mat-label>Comentario</mat-label>
-            <input matInput placeholder="Insira um comentario" type="text" #titulos required
-              formControlName="com_text" />
-            <mat-hint align="end">{{ titulos.value.length }} / 100</mat-hint>
-            <mat-error *ngIf="form.get('com_text').hasError('required')">
-              Comentario
-              <strong>Invalido</strong>
-            </mat-error>
-            <mat-icon matSuffix>person</mat-icon>
-          </mat-form-field>
+    </div>
+    <div fxFlex="auto" style="max-height: 400px;">
+      <div style="padding: 10px;">
+        <div fxLayout="column" fxLayoutAlign="start stretch">
+          <div style="max-height: 400px; overflow-y: auto;">
+            <mat-card-title *ngIf="postagem.comentarios.length">Todos os comentarios</mat-card-title>
+            <div *ngIf="!postagem.comentarios.length">
+              <div *ngIf="api && !api.firebaseUser.uid">
+                <mat-card>
+                  <mat-card-title>Faça login ou cadrastre-se</mat-card-title>
+                  <div fxLayout="row" fxLayoutAlign="space-around center"><button
+                      mat-raised-button  [routerLink]="[ '/login' ]">Login</button><button mat-raised-button color="primary"  [routerLink]="[ '/signup' ]">Cadrastre-se</button>
+                  </div>
+                </mat-card>
+              </div>
+              <div *ngIf="api && api.firebaseUser.uid">
+                <mat-card-title>Adicione seu comentario</mat-card-title>
+              </div>
+            </div>
+            <div *ngFor="let item of postagem.comentarios">
+              <app-comentario [comentario]="item.com_text"></app-comentario>
+            </div>
+          </div>
+          <form [formGroup]="form" *ngIf="api && api.firebaseUser.uid">
+            <div fxLayout="column" fxLayoutAlign="start stretch">
+              <mat-form-field class="" appearance="outline" fxFlex="auto">
+                <mat-label>Comentario</mat-label>
+                <input matInput placeholder="Insira um comentario" type="text" #titulos required
+                  formControlName="com_text" />
+                <mat-hint align="end">{{ titulos.value.length }} / 100</mat-hint>
+                <mat-error *ngIf="form.get('com_text').hasError('required')">
+                  Comentario
+                  <strong>Invalido</strong>
+                </mat-error>
+              </mat-form-field>
+              <div>
+                <button mat-raised-button color="primary" fxFlex="auto" (click)="salvarComentario()">Salvar
+                  Comentario</button></div>
+            </div>
           </form>
+        </div>
       </div>
-    </mat-card-content>
+    </div>
   </div>
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="salvarComentario()">Salvar Comentario</button>
-    <button mat-raised-button color="primary">Like {{postagem.post_like}} </button>
-    <mat-icon>favotite</mat-icon>
+    <!-- <mat-icon>favotite</mat-icon> -->
   </mat-card-actions>
 </mat-card>

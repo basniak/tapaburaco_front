@@ -22,31 +22,41 @@ export class PostagemComponent implements OnInit {
       prevEl: '.swiper-button-prev'
     },
     loop: true,
-    autoHeight: true,
+    autoHeight: true
   };
-  constructor(private formBuilder: FormBuilder, public api: ApiService, public snack: MatSnackBar, public ngxBar: LoadingBarService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    public api: ApiService,
+    public snack: MatSnackBar,
+    public ngxBar: LoadingBarService
+  ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      com_text: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    })
+      com_text: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
+    });
   }
   salvarComentario() {
-    this.ngxBar.start()
+    this.ngxBar.start();
     if (this.form.valid) {
-      var obj = { user_id: this.api.usuario._id, post_id: this.postagem._id, com_text: this.form.get('com_text').value }
-      this.api.postData('comments', obj).subscribe(res => {
-        this.ngxBar.complete()
-        this.api.getPostagens()
-      }, err => {
-
-        this.ngxBar.complete()
-      })
+      var obj = {
+        user_id: this.api.usuario._id,
+        post_id: this.postagem._id,
+        com_text: this.form.get('com_text').value
+      };
+      this.api.postData('comments', obj).subscribe(
+        res => {
+          this.ngxBar.complete();
+          this.api.getPostagens();
+        },
+        err => {
+          this.snack.open('Falha ao salvar comentario');
+          this.ngxBar.complete();
+        }
+      );
     } else {
-      this.ngxBar.complete()
+      this.snack.open('Comentario ínvalido');
+      this.ngxBar.complete();
     }
   }
-
-
-
 }

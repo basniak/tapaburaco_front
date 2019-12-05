@@ -1,14 +1,8 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, isDevMode } from "@angular/core";
-import {
-  Validators,
-  FormGroup,
-  FormControl,
-  FormBuilder
-} from "@angular/forms";
-import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material";
+import { Component, OnInit, ViewChild, ChangeDetectorRef, isDevMode } from '@angular/core';
+import { Validators, FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 import { ApiService } from 'src/app/services/api.service';
-
 
 @Component({
   selector: 'app-auth',
@@ -17,7 +11,7 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export class AuthComponent implements OnInit {
   form: FormGroup;
-  imagemPerfil: any = "/assets/add.png";
+  imagemPerfil: any = '/assets/add.png';
   arquivoImg: any;
   public captchaIsLoaded = false;
   public captchaSuccess = false;
@@ -34,14 +28,14 @@ export class AuthComponent implements OnInit {
     public rota: Router,
     public snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      name: ["", [Validators.required, Validators.minLength(2)]],
-      cidade: ["", [Validators.required, Validators.minLength(2)]],
-      email: ["", [Validators.required, Validators.email]],
-      pass: ["", [Validators.required, Validators.minLength(6)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      cidade: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      pass: ['', [Validators.required, Validators.minLength(6)]],
       foto: [null, [Validators.required]]
     });
   }
@@ -66,23 +60,10 @@ export class AuthComponent implements OnInit {
     }
   }
 
-  loginFacebook() {
-    this.auth.doFacebookLogin().then(res => {
-      this.rota.navigate(["form-empresa"])
-      this.snackBar.open("Usuario Criado com sucesso", "ok", {
-        duration: 5000
-      });
-    }).catch(erro => {
-      this.snackBar.open(erro.message, "erro", {
-        duration: 3000
-      });
-    })
-  }
 
   registrar() {
-
     if (!this.arquivoImg) {
-      this.snackBar.open("Carregamento da imagem obrigatorio", "ok", {
+      this.snackBar.open('Carregamento da imagem obrigatorio', 'ok', {
         duration: 4000
       });
       return;
@@ -92,18 +73,18 @@ export class AuthComponent implements OnInit {
         .doRegister(this.form.value, this.arquivoImg)
         .then(res => {
           // console.log("registro", res);
-          this.snackBar.open("Email registrado com sucesso", "ok", {
+          this.snackBar.open('Email registrado com sucesso', 'ok', {
             duration: 5000
           });
-          this.rota.navigate(["/"]);
+          this.rota.navigate(['/']);
         })
         .catch(erro => {
-          this.snackBar.open(erro.message, "ok", {
+          this.snackBar.open(erro.message, 'ok', {
             duration: 3000
           });
         });
     } else {
-      this.snackBar.open("Todos os campos são obrigatorios", "ok", {
+      this.snackBar.open('Todos os campos são obrigatorios', 'ok', {
         duration: 3000
       });
     }
@@ -135,5 +116,4 @@ export class AuthComponent implements OnInit {
     this.captchaIsReady = true;
     this.cdr.detectChanges();
   }
-
 }

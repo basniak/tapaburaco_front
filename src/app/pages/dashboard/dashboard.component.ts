@@ -7,13 +7,10 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  public dadosPostagem = []
-  constructor(public api: ApiService) {
-
-  }
+  constructor(public api: ApiService) {}
 
   ngOnInit() {
-    this.api.getPostagens()
+    this.api.getPostagens();
+    this.api.loadingBar.complete()
   }
-
 }

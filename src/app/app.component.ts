@@ -9,6 +9,10 @@ import { ApiService } from './services/api.service';
 export class AppComponent {
   title = 'tapaburaco';
 
-  constructor(public api: ApiService) {
+  constructor(public api: ApiService) {}
+
+  logOut() {
+    this.api.afAuth.auth.signOut();
+    this.api.setFirebaseNull();
   }
 }
