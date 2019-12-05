@@ -57,13 +57,16 @@ export class PostagemComponent implements OnInit {
   }
 
   resolvidoCheck(resolvidos) {
+    let retorn = true;
     for (let i = 0; i < resolvidos.length; i++) {
       if (resolvidos[i].user_id == this.api.usuario._id) {
         this.resolvido = true;
+        retorn = false;
       }
     }
+    return retorn;
   }
-  likepost(){
+  likepost() {
     this.ngxBar.start();
     var obj = {
       user_id: this.api.usuario._id,
