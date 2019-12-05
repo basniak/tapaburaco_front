@@ -108,9 +108,9 @@ export class ApiService {
   }
   async getUsuarioLogado() {
     let params = { id: this.firebaseUser.uid };
-    this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params }).subscribe(res => {
+    this.http.get(`${this.baseurl}users/:id`, { headers: this.tokenHeader, params }).subscribe((res: Usuario) => {
       console.log(res);
-      this.usuario = res;
+      if (res) this.usuario = res;
     });
   }
   public getData(rota): Observable<any> {

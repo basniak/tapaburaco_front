@@ -24,6 +24,7 @@ export class PostagemComponent implements OnInit {
     loop: true,
     autoHeight: true
   };
+  resolvido = false;
   constructor(
     private formBuilder: FormBuilder,
     public api: ApiService,
@@ -35,7 +36,51 @@ export class PostagemComponent implements OnInit {
     this.form = this.formBuilder.group({
       com_text: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
     });
+    // this.resolvidoCheck(this.postagem.solveds);
   }
+  marcarResolvido() {
+    this.ngxBar.start();
+    var obj = {
+      user_id: this.api.usuario._id,
+      post_id: this.postagem._id
+    };
+    this.api.postData('solveds', obj).subscribe(
+      res => {
+        this.ngxBar.complete();
+        this.api.getPostagens();
+      },
+      err => {
+        this.snack.open('Falha ao salvar comentario');
+        this.ngxBar.complete();
+      }
+    );
+  }
+
+  resolvidoCheck(resolvidos) {
+    for (let i = 0; i < resolvidos.length; i++) {
+      if (resolvidos[i].user_id == this.api.usuario._id) {
+        this.resolvido = true;
+      }
+    }
+  }
+  likepost(){
+    this.ngxBar.start();
+    var obj = {
+      user_id: this.api.usuario._id,
+      post_id: this.postagem._id
+    };
+    this.api.postData('likes', obj).subscribe(
+      res => {
+        this.ngxBar.complete();
+        this.api.getPostagens();
+      },
+      err => {
+        this.snack.open('Falha ao salvar comentario');
+        this.ngxBar.complete();
+      }
+    );
+  }
+
   salvarComentario() {
     this.ngxBar.start();
     if (this.form.valid) {

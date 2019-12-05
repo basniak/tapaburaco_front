@@ -15,7 +15,7 @@
     </div>
   </mat-card-content>
   <div fxLayout="row">
-    <div fxFlex="40">
+    <div fxFlex="43">
       <div class="slide-controler">
         <swiper [config]="config" #swipper>
           <div class="swiper-wrapper" #swipperrapper>
@@ -32,9 +32,15 @@
           <div class="swiper-button-next"></div>
         </swiper>
       </div>
-      <div>
-       <button mat-raised-button>text</button>
+      <div style="padding-top: 10px;" *ngIf="api && api.firebaseUser.uid">
+        <button mat-raised-button color="primary">
+          <mat-icon (click)="likepost()">favorite</mat-icon>&nbsp;Like&nbsp;
+        </button>
+        <button mat-raised-button (click)="marcarResolvido()" *ngIf="resolvidoCheck(postagem.solveds)">Marcar como
+          resolvido?</button>
       </div>
+      <div> <button mat-raised-button *ngIf="postagem.solveds.length">Marcado com resolvido por
+          {{postagem.solveds.length}}</button></div>
     </div>
     <div fxFlex="auto" style="max-height: 400px;">
       <div style="padding: 10px;">
@@ -45,8 +51,9 @@
               <div *ngIf="api && !api.firebaseUser.uid">
                 <mat-card>
                   <mat-card-title>Faça login ou cadrastre-se</mat-card-title>
-                  <div fxLayout="row" fxLayoutAlign="space-around center"><button
-                      mat-raised-button  [routerLink]="[ '/login' ]">Login</button><button mat-raised-button color="primary"  [routerLink]="[ '/signup' ]">Cadrastre-se</button>
+                  <div fxLayout="row" fxLayoutAlign="space-around center"><button mat-raised-button
+                      [routerLink]="[ '/login' ]">Login</button><button mat-raised-button color="primary"
+                      [routerLink]="[ '/signup' ]">Cadrastre-se</button>
                   </div>
                 </mat-card>
               </div>
